@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Marvel Personagens</string>
+    <string name="title_activity_details">ScrollingActivity</string>
+    <string name="facebook_app_id">4250512241647609</string>
+    <string name="large_text">
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pretium ultricies hendrerit.
+        Phasellus egestas et dui ac auctor. Fusce sed lacus ligula. Fusce et sem dolor. Aenean
+        luctus varius felis a congue. Nullam ante sem, interdum et posuere at, ullamcorper id mauris.
+        Mauris id magna scelerisque, pellentesque augue ac, posuere metus. Ut velit libero, aliquam
+        at consectetur sed, lobortis eu lorem. Sed mattis eget dui quis tempus. Quisque eu turpis
+        augue. Aenean eros diam, accumsan vel dolor vel, porta commodo risus. Nunc a sem vitae urna
+        suscipit pulvinar. Suspendisse porttitor vulputate mi, eget tristique dolor vestibulum quis.
+        Maecenas urna justo, pretium sed lacinia quis, congue et diam."
+    </string>
+    <string name="action_settings">Configurações</string>
+</resources>
