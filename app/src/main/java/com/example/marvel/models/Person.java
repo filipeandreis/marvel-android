@@ -61,6 +61,10 @@ public class Person implements Serializable {
 
     }
 
+    public Person() {
+
+    }
+
     public long getId() {
         return id;
     }

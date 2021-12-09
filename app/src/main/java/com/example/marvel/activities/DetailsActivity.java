@@ -3,6 +3,8 @@ package com.example.marvel.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+import com.example.marvel.BDHelper.Database;
 import com.example.marvel.models.Person;
 import com.example.marvel.interfaces.PersonDAO;
 import com.example.marvel.R;
@@ -12,10 +14,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.List;
 
 public class DetailsActivity extends AppCompatActivity {
     ImageView imageView;
@@ -27,6 +32,7 @@ public class DetailsActivity extends AppCompatActivity {
     TextView createdBy;
     TextView publisher;
     TextView imdb;
+    Database bdHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +52,10 @@ public class DetailsActivity extends AppCompatActivity {
         CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         personDAO = Connections.getInstance(getApplicationContext()).getDatabase().getPersonDAO();
         long id =  getIntent().getLongExtra("id", 0);
-        Person marvel = personDAO.getPersonById(id);
+
+        bdHelper = new Database(DetailsActivity.this);
+        Person marvel = bdHelper.getCharacter(Long.toString(id));
+
         toolBarLayout.setTitle(marvel.getName());
         setViews(marvel);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

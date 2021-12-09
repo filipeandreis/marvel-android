@@ -12,10 +12,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.marvel.BDHelper.Database;
 import com.example.marvel.network.NetworkClient;
 import com.example.marvel.models.Person;
 import com.example.marvel.adapters.PersonAdapter;
@@ -25,7 +24,6 @@ import com.example.marvel.database.Connections;
 import com.example.marvel.interfaces.AsyncTaskCallback;
 import com.example.marvel.interfaces.DataService;
 import com.example.marvel.utils.PersonInsertAsync;
-import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 
 import java.util.ArrayList;
@@ -38,13 +36,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements PersonAdapter.ItemClicked {
-
     RecyclerView recyclerView;
     RecyclerView.Adapter myAdapter;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<Person> marvels;
     ProgressDialog progressDoalog;
     PersonDAO personDAO;
+    Database bdHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +63,9 @@ public class MainActivity extends AppCompatActivity implements PersonAdapter.Ite
         progressDoalog = new ProgressDialog(MainActivity.this);
         progressDoalog.setMessage("Loading....");
 
+        bdHelper = new Database(MainActivity.this);
 
-        List <Person> list = personDAO.getAllPersons();
+        List <Person> list = bdHelper.getCharacters();
         if (list.size() > 0) {
             marvels.clear();
             marvels.addAll(list);
@@ -125,10 +124,6 @@ public class MainActivity extends AppCompatActivity implements PersonAdapter.Ite
         return super.onOptionsItemSelected(item);
     }
 
-    public void setMenuItems () {
-
-    }
-
     @Override
     public void onItemClicked(int index) {
 
@@ -145,21 +140,24 @@ public class MainActivity extends AppCompatActivity implements PersonAdapter.Ite
 
 
     private void generateDataList(List<Person> data) {
-
         marvels.clear();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(new PersonInsertAsync(data, getApplicationContext(),this, new AsyncTaskCallback() {
                 @Override
                 public void handleResponse(Object object) {
                     progressDoalog.dismiss();
-                    List <Person> list = personDAO.getAllPersons();
+
+                    bdHelper = new Database(MainActivity.this);
+                    List <Person> list = bdHelper.getCharacters();
+
                     marvels.addAll(list);
                     myAdapter.notifyDataSetChanged();
                 }
                 @Override
                 public void handleFault(Exception e) {
+                    bdHelper = new Database(MainActivity.this);
+                    List <Person> list = bdHelper.getCharacters();
 
-                    List <Person> list  = personDAO.getAllPersons();
                     if (list != null &&  list.size() > 0) {
 
                         marvels.addAll(list);
@@ -172,9 +170,7 @@ public class MainActivity extends AppCompatActivity implements PersonAdapter.Ite
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Check that it is the SecondActivity with an OK result
         if (requestCode == 0 && resultCode == RESULT_OK) {
-            // Get String data from Intent
             String ResponseCode = data.getStringExtra("pp_ResponseCode");
             System.out.println("DateFn: ResponseCode:" + ResponseCode);
             if(ResponseCode.equals("000")) {
